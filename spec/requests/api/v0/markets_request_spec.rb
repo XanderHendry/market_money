@@ -101,7 +101,7 @@ RSpec.describe "Markets Endpoints" do
       market_vendor2 = MarketVendor.create({ market_id: @market.id, vendor_id: @vendor2.id})
     end
     it 'sends a list of all Vendors that belong to the given Market' do 
-      get "/api/v0/markets/#{market.id}/vendors"
+      get "/api/v0/markets/#{@market.id}/vendors"
 
       expect(response).to be_successful
 
@@ -121,7 +121,7 @@ RSpec.describe "Markets Endpoints" do
         expect(vendor).to have_key(:contact_phone)
         expect(vendor[:contact_phone]).to be_a(String)
         expect(vendor).to have_key(:credit_accepted)
-        expect(vendor[:credit_accepted]).to be_a(Boolean)
+        expect(vendor[:credit_accepted]).to be(true).or be(false)
       end
     end
     describe 'requesting a Markets vendors with an ID not in the database' do 
