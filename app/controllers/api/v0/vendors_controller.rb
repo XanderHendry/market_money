@@ -3,7 +3,7 @@ module Api
     class VendorsController < ApplicationController
       def index
         if Market.exists?(params[:market_id])
-          render json: Market.find(params[:market_id]).vendors
+          render json: VendorSerializer.new(Market.find(params[:market_id]).vendors)
         else
           render json: { errors: "Couldn't find Market with 'id'=#{params[:market_id]}" }, status: :not_found
         end
@@ -11,7 +11,7 @@ module Api
 
       def show
         if Vendor.exists?(params[:id])
-          render json: Vendor.find(params[:id])
+          render json: VendorSerializer.new(Vendor.find(params[:id]))
         else
           render json: { errors: "Couldn't find Vendor with 'id'=#{params[:id]}" }, status: :not_found
         end
