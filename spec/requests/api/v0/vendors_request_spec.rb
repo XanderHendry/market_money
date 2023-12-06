@@ -10,6 +10,7 @@ describe 'Vendors Endpoints' do
       vendor = JSON.parse(response.body, symbolize_names: true)
     
       expect(response).to be_successful
+      expect(response.status).to eq(200)
     
       expect(vendor).to have_key(:data)
       expect(vendor[:data]).to be_an(Hash)
@@ -38,7 +39,7 @@ describe 'Vendors Endpoints' do
         get "/api/v0/vendors/99999"
 
         expect(response).to have_http_status(:not_found)
-        expect(JSON.parse(response.body)).to eq("errors"=>"Couldn't find Vendor with 'id'=99999")
+        expect(JSON.parse(response.body)).to eq("errors" => [{"status"=>"404", "title"=>"Couldn't find Vendor with 'id'=99999"}])
       end
     end
   end

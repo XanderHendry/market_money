@@ -8,6 +8,7 @@ RSpec.describe "Markets Endpoints" do
         get '/api/v0/markets'
 
         expect(response).to be_successful
+        expect(response.status).to eq(200)
 
         markets = JSON.parse(response.body, symbolize_names: true)
       expect(markets[:data].count).to eq(3)
@@ -51,7 +52,10 @@ RSpec.describe "Markets Endpoints" do
       id = create(:market).id
     
       get "/api/v0/markets/#{id}"
-    
+      
+      expect(response).to be_successful
+      expect(response.status).to eq(200)
+      
       market = JSON.parse(response.body, symbolize_names: true)
     
       expect(response).to be_successful
@@ -94,8 +98,9 @@ RSpec.describe "Markets Endpoints" do
       it 'returns a 404 error with a message' do
         get "/api/v0/markets/99999"
 
-        expect(response).to have_http_status(:not_found)
-        expect(JSON.parse(response.body)).to eq("errors"=>"Couldn't find Market with 'id'=99999")
+        expect(response).to_not be_successful
+        expect(response.status).to eq(404)
+        expect(JSON.parse(response.body)).to eq("errors"=>[{"status"=>"404", "title"=>"Couldn't find Market with 'id'=99999"}])
       end
     end
   end
@@ -136,7 +141,7 @@ RSpec.describe "Markets Endpoints" do
 
         expect(vendor[:attributes]).to have_key(:contact_phone)
         expect(vendor[:attributes][:contact_phone]).to be_a(String)
-        
+
         expect(vendor[:attributes]).to have_key(:credit_accepted)
         expect(vendor[:attributes][:credit_accepted]).to be(true).or be(false)
       end
@@ -146,7 +151,7 @@ RSpec.describe "Markets Endpoints" do
         get "/api/v0/markets/99999/vendors"
 
         expect(response).to have_http_status(:not_found)
-        expect(JSON.parse(response.body)).to eq("errors"=>"Couldn't find Market with 'id'=99999")
+        expect(JSON.parse(response.body)).to eq("errors"=>[{"status"=>"404", "title"=>"Couldn't find Market with 'id'=99999"}])
       end
     end
   end
