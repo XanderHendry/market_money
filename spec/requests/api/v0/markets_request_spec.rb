@@ -91,13 +91,46 @@ RSpec.describe "Markets Endpoints" do
     end
   end
   describe 'Market Vendors Index endpoint (/api/v0/markets/:market_id/vendors)' do 
+    before(:each) do 
+      @market = create(:market)
+      @vendor1 = create(:vendor)
+      @vendor2 = create(:vendor)
+      @vendor3 = create(:vendor)
+      @vendor4 = create(:vendor)
+      market_vendor1 = MarketVendor.create({ market_id: @market.id, vendor_id: @vendor1.id})
+      market_vendor2 = MarketVendor.create({ market_id: @market.id, vendor_id: @vendor2.id})
+    end
     it 'sends a list of all Vendors that belong to the given Market' do 
-      market = create(:market)
-      
       get "/api/v0/markets/#{market.id}/vendors"
 
       expect(response).to be_successful
 
+      market_vendors = JSON.parse(response.body, symbolize_names: true)
+
+      expect(market_vendors.count).to eq(2)
+
+      market_vendors.each do |vendor|
+        expect(vendor).to have_key(:id)
+        expect(vendor[:id]).to be_an(Integer)
+        expect(vendor).to have_key(:name)
+        expect(vendor[:name]).to be_a(String)
+        expect(vendor).to have_key(:description)
+        expect(vendor[:description]).to be_a(String)
+        expect(vendor).to have_key(:contact_name)
+        expect(vendor[:contact_name]).to be_a(String)
+        expect(vendor).to have_key(:contact_phone)
+        expect(vendor[:contact_phone]).to be_a(String)
+        expect(vendor).to have_key(:credit_accepted)
+        expect(vendor[:credit_accepted]).to be_a(Boolean)
+      end
+    end
+    describe 'requesting a Markets vendors with an ID not in the database' do 
+      it 'returns a 404 error with a message' do
+        get "/api/v0/markets/99999/vendors"
+
+        expect(response).to have_http_status(:not_found)
+        expect(JSON.parse(response.body)).to eq("errors"=>"Couldn't find Market with 'id'=99999")
+      end
     end
   end
 end
