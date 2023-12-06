@@ -59,7 +59,7 @@ describe 'Vendors Endpoints' do
                               credit_accepted: vendor.credit_accepted
                             }
       expect(response).to be_successful
-      expect(reponse.status).to eq(201)
+      expect(response.status).to eq(201)
       result = JSON.parse(response.body, symbolize_names: true)
 
       expect(result[:data][:attributes][:name]).to eq(vendor.name)
@@ -69,22 +69,21 @@ describe 'Vendors Endpoints' do
       it 'returns a 400 error with a message' do 
         vendor = build(:vendor)
         post '/api/v0/vendors', params: { 
-                                name: nil,
+                                name: '',
                                 description: vendor.description,
                                 contact_name: vendor.contact_name,
                                 contact_phone: vendor.contact_phone,
                                 credit_accepted: nil
                               }
-        expect(response).to_not be_successful
-        expect(reponse.status).to eq(400)
+        # expect(response).to_not be_successful
+        expect(response.status).to eq(400)
         result = JSON.parse(response.body, symbolize_names: true)
         expect(result).to have_key(:errors)
-        expect(result[:errors]).to be_a(Hash)
-        expect(result[:errors].count).to eq(2)
-        error1 = result[:errors.first]
-        error2 = result[:errors.last]
-        expect(error1[:detail]).to eq("Validation failed: Vendor name can't be blank")
-        expect(error2[:detail]).to eq("Validation failed: Credit accepted must be true or false")
+        expect(result[:errors]).to be_a(Array)
+        errors = result[:errors].first
+        expect(errors[:title].count).to eq(2)
+        expect(errors[:title].first).to eq("Name can't be blank")
+        expect(errors[:title].last).to eq("Credit accepted must be true or false")
       end
     end
   end
