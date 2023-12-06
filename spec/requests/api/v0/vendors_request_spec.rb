@@ -22,7 +22,7 @@ describe 'Vendors Endpoints' do
         get "/api/v0/vendors/99999"
 
         expect(response).to have_http_status(:not_found)
-        expect(JSON.parse(response.body)).to eq("errors"=>"Couldn't find vendor with 'id'=99999")
+        expect(JSON.parse(response.body)).to eq("errors"=>"Couldn't find Vendor with 'id'=99999")
       end
     end
   end
