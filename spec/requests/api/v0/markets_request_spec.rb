@@ -90,4 +90,14 @@ RSpec.describe "Markets Endpoints" do
       end
     end
   end
+  describe 'Market Vendors Index endpoint (/api/v0/markets/:market_id/vendors)' do 
+    it 'sends a list of all Vendors that belong to the given Market' do 
+      market = create(:market)
+      
+      get "/api/v0/markets/#{market.id}/vendors"
+
+      expect(response).to be_successful
+
+    end
+  end
 end
