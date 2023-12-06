@@ -6,6 +6,9 @@ describe 'Vendors Endpoints' do
       id = create(:vendor).id
     
       get "/api/v0/vendors/#{id}"
+
+      expect(response).to be_successful
+      expect(response.status).to eq(200)
     
       vendor = JSON.parse(response.body, symbolize_names: true)
     
@@ -38,7 +41,9 @@ describe 'Vendors Endpoints' do
       it 'returns a 404 error with a message' do
         get "/api/v0/vendors/99999"
 
-        expect(response).to have_http_status(:not_found)
+        expect(response).to_not be_successful
+        expect(response.status).to eq(404)
+        
         expect(JSON.parse(response.body)).to eq("errors" => [{"status"=>"404", "title"=>"Couldn't find Vendor with 'id'=99999"}])
       end
     end
