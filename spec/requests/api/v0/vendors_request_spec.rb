@@ -16,6 +16,16 @@ describe 'Vendors Endpoints' do
 
       expect(vendor).to have_key(:name)
       expect(vendor[:name]).to be_a(String)
+
+      expect(vendor).to have_key(:description)
+      expect(vendor[:description]).to be_a(String)
+
+      expect(vendor).to have_key(:contact_name)
+      expect(vendor[:contact_name]).to be_a(String)
+
+      expect(vendor).to have_key(:contact_phone)
+      expect(vendor[:contact_phone]).to be_a(String)
+
     end
     describe 'requesting a vendor not in the database' do 
       it 'returns a 404 error with a message' do
