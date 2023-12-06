@@ -11,4 +11,8 @@ RSpec.describe Market, type: :model do
     it { should validate_presence_of(:lat) }
     it { should validate_presence_of(:lon) }
   end
+  describe 'relationships' do
+    it { should have_many(:market_vendors) }
+    it { should have_many(:vendors).through(:market_vendors) }
+  end
 end
