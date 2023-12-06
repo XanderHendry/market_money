@@ -6,7 +6,12 @@ module Api
       end
 
       def show
-        render json: Market.find(params[:id])
+        if Market.exists?(params[:id])
+          render json: Market.find(params[:id])
+        else
+          render json: { errors: "Couldn't find Market with 'id'=#{params[:id]}" }, status: :not_found
+        end
+        
       end
     end
   end

@@ -81,5 +81,13 @@ RSpec.describe "Markets Endpoints" do
       expect(market).to have_key(:lon)
       expect(market[:lon]).to be_a(String)
     end
+    describe 'requesting a Market not in the database' do 
+      it 'returns a 404 error with a message' do
+        get "/api/v0/markets/99999"
+
+        expect(response).to have_http_status(:not_found)
+        expect(JSON.parse(response.body)).to eq("errors"=>"Couldn't find Market with 'id'=99999")
+      end
+    end
   end
 end
