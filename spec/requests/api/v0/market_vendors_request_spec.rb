@@ -18,7 +18,7 @@ RSpec.describe 'MarketVendor Endpoints' do
     end
     describe 'requesting a MarketVendor be created with incomplete/incorrect data' do
       it 'returns a 400 error with a message' do
-        vendor = build(:vendor)
+        vendor = create(:vendor)
         post '/api/v0/market_vendors', params: { 
           market_id: 99999,
           vendor_id: vendor.id
@@ -31,10 +31,12 @@ RSpec.describe 'MarketVendor Endpoints' do
         expect(result[:errors].first[:title]).to eq("Validation failed: Market must exist")
       end
       it 'returns a 422 error with a message' do 
-        market_vendor = create(:market_vendor)
+        market = create(:market)
+        vendor = create(:vendor)
+        market_vendor = MarketVendor.create({market_id: market.id, vendor_id: vendor.id})
         post '/api/v0/market_vendors', params: { 
-          market_id: market_vendor.market.id,
-          vendor_id: market_vendor.vendor.id
+          market_id: market.id,
+          vendor_id: vendor.id
         }
         expect(response).to_not be_successful
         expect(response.status).to eq(422)
@@ -44,5 +46,5 @@ RSpec.describe 'MarketVendor Endpoints' do
         expect(result[:errors].first[:title]).to eq("Validation failed: Market vendor asociation between market with market_id=#{market_vendor.market.id} and vendor_id=#{market_vendor.vendor.id} already exists")
       end
     end
-  end
+  end 
 end 
