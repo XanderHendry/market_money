@@ -102,7 +102,7 @@ RSpec.describe 'Vendors Endpoints' do
         expect(response.status).to eq(404)
 
         expect(JSON.parse(response.body)).to eq('errors' => [{ 'status' => '404',
-                                                               'title' => "Couldn't find Vendor with 'id'=99999" }])
+        'title' => "Couldn't find Vendor with 'id'=99999" }])
       end
       it 'returns a 400 error with a message' do
         vendor = build(:vendor)
@@ -137,7 +137,7 @@ RSpec.describe 'Vendors Endpoints' do
         expect(response.status).to eq(404)
 
         expect(JSON.parse(response.body)).to eq('errors' => [{ 'status' => '404',
-                                                               'title' => "Couldn't find Vendor with 'id'=99999" }])
+        'title' => "Couldn't find Vendor with 'id'=99999" }])
       end
     end
   end

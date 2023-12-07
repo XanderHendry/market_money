@@ -1,7 +1,7 @@
 require 'rails_helper' 
 
 RSpec.describe 'MarketVendor Endpoints' do 
-  describe 'MarketVendor Create endpoint (POST /api/v0/vendors)' do
+  describe 'MarketVendor Create endpoint (POST /api/v0/market_vendors)' do
     it 'can add a MarketVendor to the api database and returns a 201 status' do
       market = create(:market)
       vendor = create(:vendor)
@@ -24,13 +24,13 @@ RSpec.describe 'MarketVendor Endpoints' do
           vendor_id: vendor.id
         }
         expect(response).to_not be_successful
-        expect(response.status).to eq(400)
+        expect(response.status).to eq(404)
         result = JSON.parse(response.body, symbolize_names: true)
         expect(result).to have_key(:errors)
         expect(result[:errors]).to be_a(Array)
         expect(result[:errors].first[:title]).to eq("Validation failed: Market must exist")
       end
-      it 'returns a 422 error with a message' do 
+      it 'returns a 422 error with a message if the association already exists under another MarketVendor' do 
         market = create(:market)
         vendor = create(:vendor)
         market_vendor = MarketVendor.create({market_id: market.id, vendor_id: vendor.id})
@@ -47,4 +47,32 @@ RSpec.describe 'MarketVendor Endpoints' do
       end
     end
   end 
-end 
+  describe 'MarketVendor Delete endpoint (DELETE /api/v0/vendors/:id)' do 
+    it 'finds a MarketVendor using the market and vendor id, removes it from the api database, and returns a 204 status' do 
+      market = create(:market)
+      vendor = create(:vendor)
+      market_vendor = MarketVendor.create({market_id: market.id, vendor_id: vendor.id})
+      delete '/api/v0/market_vendors', params: { 
+        market_id: market.id,
+        vendor_id: vendor.id
+      }
+      expect(response).to be_successful
+      expect(response.status).to eq(204)
+    end
+    describe 'requesting a MarketVendor be removed with a bad market or vendor id' do 
+      it 'returns a 404 error with a message' do 
+        market = create(:market)
+        vendor = create(:vendor)
+        market_vendor = MarketVendor.create({market_id: market.id, vendor_id: vendor.id})
+        delete '/api/v0/market_vendors', params: { 
+          market_id: 99999,
+          vendor_id: vendor.id
+        }
+        expect(response).to_not be_successful
+        expect(response.status).to eq(404)
+
+        expect(JSON.parse(response.body)).to eq("errors"=>[{"status"=>"404", "title"=>"No MarketVendor with market_id=99999 AND vendor_id=#{vendor.id} exists"}])
+      end
+    end
+  end
+end

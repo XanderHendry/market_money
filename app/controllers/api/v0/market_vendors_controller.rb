@@ -10,6 +10,16 @@ module Api
         render json: MarketVendorSerializer.new(market_vendor), status: :created
       end
 
+      def delete
+       market_vendor = MarketVendor.find_by(market_id: params[:market_id], vendor_id: params[:vendor_id])
+       if !market_vendor.nil?
+       market_vendor.destroy
+       render json: MarketVendorSerializer.new(market_vendor), status: :no_content
+       else
+        render json: ErrorSerializer.new(ErrorMessage.new("No MarketVendor with market_id=#{params[:market_id]} AND vendor_id=#{params[:vendor_id]} exists", 404)).serialize_json, status: :not_found
+       end
+      end
+
       private
 
       def market_vendor_params
@@ -21,7 +31,7 @@ module Api
       end
 
       def record_invalid_response(exception)
-        render json: ErrorSerializer.new(ErrorMessage.new(exception.message, 400)).serialize_json, status: :bad_request
+        render json: ErrorSerializer.new(ErrorMessage.new(exception.message, 404)).serialize_json, status: :not_found
       end
 
       def existing_record_response(exception)
