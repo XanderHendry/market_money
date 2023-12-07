@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Vendors Endpoints' do
+RSpec.describe 'Vendors Endpoints' do
   describe 'Vendor Show endpoint (/api/v0/vendors/:id)' do
     it 'can get one vendor by its id' do
       id = create(:vendor).id
@@ -75,7 +75,7 @@ describe 'Vendors Endpoints' do
           contact_phone: vendor.contact_phone,
           credit_accepted: nil
         }
-        # expect(response).to_not be_successful
+        expect(response).to_not be_successful
         expect(response.status).to eq(400)
         result = JSON.parse(response.body, symbolize_names: true)
         expect(result).to have_key(:errors)

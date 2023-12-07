@@ -11,4 +11,5 @@ Rails.application.routes.draw do
       resources :vendors, only: [:show, :create, :update, :destroy]
     end
   end
+  post '/api/v0/market_vendors', to: 'api/v0/market_vendors#create'
 end
