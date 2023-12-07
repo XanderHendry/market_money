@@ -79,11 +79,8 @@ describe 'Vendors Endpoints' do
         expect(response.status).to eq(400)
         result = JSON.parse(response.body, symbolize_names: true)
         expect(result).to have_key(:errors)
-        expect(result[:errors]).to be_a(Array)
-        errors = result[:errors].first
-        expect(errors[:title].count).to eq(2)
-        expect(errors[:title].first).to eq("Name can't be blank")
-        expect(errors[:title].last).to eq("Credit accepted must be true or false")
+        expect(result[:errors]).to be_a(Array) 
+        expect(result[:errors].first[:title]).to eq("Validation failed: Name can't be blank, Credit accepted must be true or false")
       end
     end
   end
