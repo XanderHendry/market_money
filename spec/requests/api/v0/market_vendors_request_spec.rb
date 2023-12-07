@@ -1,7 +1,7 @@
 require 'rails_helper' 
 
 RSpec.describe 'MarketVendor Endpoints' do 
-  describe 'MarketVendor Create endpoint (POST /api/v0/vendors)' do
+  describe 'MarketVendor Create endpoint (POST /api/v0/market_vendors)' do
     it 'can add a MarketVendor to the api database and returns a 201 status' do
       market = create(:market)
       vendor = create(:vendor)
@@ -47,4 +47,28 @@ RSpec.describe 'MarketVendor Endpoints' do
       end
     end
   end 
+  describe 'MarketVendor Delete endpoint (DELETE /api/v0/vendors/:id)' do 
+    it 'finds a MarketVendor using the market and vendor id, removes it from the api database, and returns a 204 status' do 
+      market = create(:market)
+      vendor = create(:vendor)
+      market_vendor = MarketVendor.create({market_id: market.id, vendor_id: vendor.id})
+      delete api_v0_vendor_path(market.id, vendor.id)
+      expect(response).to be_successful
+      expect(response.status).to eq(204)
+    end
+    describe 'requesting a MarketVendor be removed with a bad market or vendor id' do 
+      it 'returns a 404 error with a message' do 
+        market = create(:market)
+        vendor = create(:vendor)
+        market_vendor = MarketVendor.create({market_id: market.id, vendor_id: vendor.id})
+        delete api_v0_vendor_path(99999, vendor.id)
+
+        expect(response).to_not be_successful
+        expect(response.status).to eq(404)
+
+        expect(JSON.parse(response.body)).to eq('errors' => [{ 'status' => '404',
+        'title' => "Couldn't find mendor with 'id'=99999" }])
+      end
+    end
+  end
 end 
