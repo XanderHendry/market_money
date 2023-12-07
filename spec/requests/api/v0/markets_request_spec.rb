@@ -110,9 +110,8 @@ RSpec.describe 'Markets Endpoints' do
       @vendor1 = create(:vendor)
       @vendor2 = create(:vendor)
       @vendor3 = create(:vendor)
-      @vendor4 = create(:vendor)
-      market_vendor1 = MarketVendor.create({ market_id: @market.id, vendor_id: @vendor1.id })
-      market_vendor2 = MarketVendor.create({ market_id: @market.id, vendor_id: @vendor2.id })
+      MarketVendor.create({ market_id: @market.id, vendor_id: @vendor1.id })
+      MarketVendor.create({ market_id: @market.id, vendor_id: @vendor2.id })
     end
     it 'sends a list of all Vendors that belong to the given Market' do
       get "/api/v0/markets/#{@market.id}/vendors"
