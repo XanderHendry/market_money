@@ -5,7 +5,7 @@ RSpec.describe 'MarketVendor Endpoints' do
     it 'can add a MarketVendor to the api database and returns a 201 status' do
       market = create(:market)
       vendor = create(:vendor)
-      post api_v0_vendors_path, params: { market_id: market.id,
+      post api_v0_market_vendors_path, params: { market_id: market.id,
                                           vendor_id: vendor.id
                                         }
       
@@ -19,7 +19,7 @@ RSpec.describe 'MarketVendor Endpoints' do
     describe 'requesting a MarketVendor be created with incomplete/incorrect data' do
       it 'returns a 400 error with a message' do
         vendor = build(:vendor)
-        post api_v0_vendors_path, params: { 
+        post api_v0_market_vendors_path, params: { 
           market_id: 99999,
           vendor_id: vendor.id
         }
@@ -32,7 +32,7 @@ RSpec.describe 'MarketVendor Endpoints' do
       end
       it 'returns a 422 error with a message' do 
         market_vendor = create(:market_vendor)
-        post api_v0_vendors_path, params: { 
+        post api_v0_market_vendors_path, params: { 
           market_id: market_vendor.market.id,
           vendor_id: market_vendor.vendor.id
         }
