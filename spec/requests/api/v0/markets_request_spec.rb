@@ -5,7 +5,7 @@ RSpec.describe 'Markets Endpoints' do
     it 'sends a list of all markets' do
       create_list(:market, 3)
 
-      get '/api/v0/markets'
+      get api_v0_markets_path
 
       expect(response).to be_successful
       expect(response.status).to eq(200)
@@ -50,7 +50,7 @@ RSpec.describe 'Markets Endpoints' do
     it 'can get one market by its id' do
       id = create(:market).id
 
-      get "/api/v0/markets/#{id}"
+      get api_v0_market_path(id)
 
       expect(response).to be_successful
       expect(response.status).to eq(200)
@@ -94,7 +94,7 @@ RSpec.describe 'Markets Endpoints' do
     end
     describe 'requesting a Market not in the database' do
       it 'returns a 404 error with a message' do
-        get '/api/v0/markets/99999'
+        get api_v0_market_path(99999)
 
         expect(response).to_not be_successful
         expect(response.status).to eq(404)
@@ -114,7 +114,7 @@ RSpec.describe 'Markets Endpoints' do
       MarketVendor.create({ market_id: @market.id, vendor_id: @vendor2.id })
     end
     it 'sends a list of all Vendors that belong to the given Market' do
-      get "/api/v0/markets/#{@market.id}/vendors"
+      get api_v0_market_vendors_path(@market.id)
 
       expect(response).to be_successful
       expect(response.status).to eq(200)
@@ -148,7 +148,7 @@ RSpec.describe 'Markets Endpoints' do
     end
     describe 'requesting a Markets vendors with an ID not in the database' do
       it 'returns a 404 error with a message' do
-        get '/api/v0/markets/99999/vendors'
+        get api_v0_market_vendors_path(99999)
 
         expect(response).to_not be_successful
         expect(response.status).to eq(404)

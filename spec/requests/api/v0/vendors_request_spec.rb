@@ -5,7 +5,7 @@ describe 'Vendors Endpoints' do
     it 'can get one vendor by its id' do
       id = create(:vendor).id
 
-      get "/api/v0/vendors/#{id}"
+      get api_v0_vendor_path(id)
 
       expect(response).to be_successful
       expect(response.status).to eq(200)
@@ -38,7 +38,7 @@ describe 'Vendors Endpoints' do
     end
     describe 'requesting a vendor not in the database' do
       it 'returns a 404 error with a message' do
-        get '/api/v0/vendors/99999'
+        get api_v0_vendor_path(99999)
 
         expect(response).to_not be_successful
         expect(response.status).to eq(404)
@@ -51,7 +51,7 @@ describe 'Vendors Endpoints' do
   describe 'Vendor Create endpoint (POST /api/v0/vendors)' do
     it 'can add a Vendor to the api database and returns a 201 status' do
       vendor = build(:vendor)
-      post '/api/v0/vendors', params: {
+      post api_v0_vendors_path, params: {
         name: vendor.name,
         description: vendor.description,
         contact_name: vendor.contact_name,
@@ -68,7 +68,7 @@ describe 'Vendors Endpoints' do
     describe 'requesting a Vendor be created with incomplete/incorrect data' do
       it 'returns a 400 error with a message' do
         vendor = build(:vendor)
-        post '/api/v0/vendors', params: {
+        post api_v0_vendors_path, params: {
           name: '',
           description: vendor.description,
           contact_name: vendor.contact_name,
@@ -87,13 +87,13 @@ describe 'Vendors Endpoints' do
   describe 'Vendor Delete endpoint (DELETE /api/v0/vendors/:id)' do 
     it 'removes a Vendor from the api database and returns a 204 status' do 
       vendor = create(:vendor)
-      delete "/api/v0/vendors/#{vendor.id}"
+      delete api_v0_vendor_path(vendor.id)
       expect(response).to be_successful
       expect(response.status).to eq(204)
     end
     describe 'requesting a Vendor be removed with a bad vendor id' do 
       it 'returns a 404 error with a message' do 
-        delete '/api/v0/vendors/99999'
+        delete api_v0_vendor_path(99999)
 
         expect(response).to_not be_successful
         expect(response.status).to eq(404)
