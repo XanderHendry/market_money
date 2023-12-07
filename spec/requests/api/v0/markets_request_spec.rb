@@ -100,6 +100,7 @@ RSpec.describe "Markets Endpoints" do
 
         expect(response).to_not be_successful
         expect(response.status).to eq(404)
+
         expect(JSON.parse(response.body)).to eq("errors"=>[{"status"=>"404", "title"=>"Couldn't find Market with 'id'=99999"}])
       end
     end
@@ -118,6 +119,7 @@ RSpec.describe "Markets Endpoints" do
       get "/api/v0/markets/#{@market.id}/vendors"
 
       expect(response).to be_successful
+        expect(response.status).to eq(200)
 
       market_vendors = JSON.parse(response.body, symbolize_names: true)
 
@@ -150,7 +152,9 @@ RSpec.describe "Markets Endpoints" do
       it 'returns a 404 error with a message' do
         get "/api/v0/markets/99999/vendors"
 
-        expect(response).to have_http_status(:not_found)
+        expect(response).to_not be_successful
+        expect(response.status).to eq(404)
+        
         expect(JSON.parse(response.body)).to eq("errors"=>[{"status"=>"404", "title"=>"Couldn't find Market with 'id'=99999"}])
       end
     end
