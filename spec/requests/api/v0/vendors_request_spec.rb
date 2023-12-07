@@ -49,7 +49,7 @@ describe 'Vendors Endpoints' do
     end
   end
   describe 'Vendor Create endpoint (POST /api/v0/vendors)' do
-    it 'can add a Vendor to the api database' do
+    it 'can add a Vendor to the api database and returns a 201 status' do
       vendor = build(:vendor)
       post '/api/v0/vendors', params: {
         name: vendor.name,
@@ -81,6 +81,25 @@ describe 'Vendors Endpoints' do
         expect(result).to have_key(:errors)
         expect(result[:errors]).to be_a(Array)
         expect(result[:errors].first[:title]).to eq("Validation failed: Name can't be blank, Credit accepted must be true or false")
+      end
+    end
+  end
+  describe 'Vendor Delete endpoint (DELETE /api/v0/vendors/:id)' do 
+    it 'removes a Vendor from the api database and returns a 204 status' do 
+      vendor = create(:vendor)
+      delete "/api/v0/vendors/#{vendor.id}"
+      expect(response).to be_successful
+      expect(response.status).to eq(204)
+    end
+    describe 'requesting a Vendor be removed with a bad vendor id' do 
+      it 'returns a 404 error with a message' do 
+        delete '/api/v0/vendors/99999'
+
+        expect(response).to_not be_successful
+        expect(response.status).to eq(404)
+
+        expect(JSON.parse(response.body)).to eq('errors' => [{ 'status' => '404',
+                                                               'title' => "Couldn't find Vendor with 'id'=99999" }])
       end
     end
   end
