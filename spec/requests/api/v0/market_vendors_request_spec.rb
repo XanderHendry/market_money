@@ -52,7 +52,10 @@ RSpec.describe 'MarketVendor Endpoints' do
       market = create(:market)
       vendor = create(:vendor)
       market_vendor = MarketVendor.create({market_id: market.id, vendor_id: vendor.id})
-      delete api_v0_vendor_path(market.id, vendor.id)
+      delete '/api/v0/market_vendors', params: { 
+        market_id: market.id,
+        vendor_id: vendor.id
+      }
       expect(response).to be_successful
       expect(response.status).to eq(204)
     end
@@ -61,13 +64,14 @@ RSpec.describe 'MarketVendor Endpoints' do
         market = create(:market)
         vendor = create(:vendor)
         market_vendor = MarketVendor.create({market_id: market.id, vendor_id: vendor.id})
-        delete api_v0_vendor_path(99999, vendor.id)
-
+        delete '/api/v0/market_vendors', params: { 
+          market_id: 99999,
+          vendor_id: vendor.id
+        }
         expect(response).to_not be_successful
         expect(response.status).to eq(404)
 
-        expect(JSON.parse(response.body)).to eq('errors' => [{ 'status' => '404',
-        'title' => "Couldn't find mendor with 'id'=99999" }])
+        expect(JSON.parse(response.body)).to eq("errors"=>[{"status"=>"404", "title"=>"No MarketVendor with market_id=99999 AND vendor_id=#{vendor.id} exists"}])
       end
     end
   end
