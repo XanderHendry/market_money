@@ -1,7 +1,6 @@
 module Api
   module V0
     class VendorsController < ApplicationController
-      
       rescue_from ActiveRecord::RecordNotFound, with: :not_found_response
       rescue_from ActiveRecord::RecordInvalid, with: :record_invalid_response
 
@@ -14,14 +13,14 @@ module Api
       end
 
       def create
-          vendor = Vendor.create!(vendor_params)
-          render json: VendorSerializer.new(vendor), status: :created 
+        vendor = Vendor.create!(vendor_params)
+        render json: VendorSerializer.new(vendor), status: :created
       end
 
       private
 
       def vendor_params
-        params.permit(:name, :description, :contact_name, :contact_phone, :credit_accepted)  
+        params.permit(:name, :description, :contact_name, :contact_phone, :credit_accepted)
       end
 
       def record_invalid_response(exception)

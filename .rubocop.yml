@@ -9,6 +9,10 @@ Style/FrozenStringLiteralComment:
   Enabled: false
 
 Metrics/BlockLength:
-  IgnoredMethods:
-    - RSpec.*
-  
+  Enabled: true
+  Exclude:
+    - 'spec/**/*'
+Layouts/LineLength:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*'
