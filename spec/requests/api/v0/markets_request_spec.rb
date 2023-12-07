@@ -158,4 +158,54 @@ RSpec.describe 'Markets Endpoints' do
       end
     end
   end
+  describe 'Market Search endpoint (/api/v0/markets/search)' do 
+    it 'will search by city/state/name, city/state, state/name, state, or name' do 
+      market = create(:market)
+      market2 = create(:market)
+      market3 = create(:market)
+
+      # search by city/state/name
+      get "/api/v0/markets/search?city=#{market.city}&state=#{market.state}&name=#{market.name}"
+      expect(response).to be_successful
+      expect(response.status).to eq(200)
+      
+      # search by city/state
+      get "/api/v0/markets/search?city=#{market.city}&state=#{market.state}"
+      expect(response).to be_successful
+      expect(response.status).to eq(200)
+      
+      # search by state/name
+      get "/api/v0/markets/search?state=#{market.state}&name=#{market.name}"
+      expect(response).to be_successful
+      expect(response.status).to eq(200)
+      
+      # search by state
+      get "/api/v0/markets/search?city=#{market.city}&state=#{market.state}"
+      expect(response).to be_successful
+      expect(response.status).to eq(200)
+      
+      # search by name
+      get "/api/v0/markets/search?name=#{market.name}"
+      expect(response).to be_successful
+      expect(response.status).to eq(200)
+
+    end
+    it 'will return a status of 422 if given bad params, a city+market name only, or a city only' do
+      market = create(:market)
+      market2 = create(:market)
+      market3 = create(:market)
+
+      get "/api/v0/markets/search?city=#{market.city}&name=#{market.name}"
+      expect(response).to_not be_successful
+      expect(response.status).to eq(422)
+
+      get "/api/v0/markets/search?city=#{market.city}"
+      expect(response).to_not be_successful
+      expect(response.status).to eq(422)
+      
+      get '/api/v0/markets/search?foo=bar'
+      expect(response).to_not be_successful
+      expect(response.status).to eq(422)
+    end
+  end
 end

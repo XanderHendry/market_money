@@ -3,6 +3,8 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "articles#index"
+  get '/api/v0/markets/search', to: 'api/v0/markets#search'
+
   namespace :api do
     namespace :v0 do
       resources :markets, only: [:index, :show] do
@@ -13,4 +15,6 @@ Rails.application.routes.draw do
   end
   post '/api/v0/market_vendors', to: 'api/v0/market_vendors#create'
   delete '/api/v0/market_vendors', to: 'api/v0/market_vendors#delete'
+
+  
 end
