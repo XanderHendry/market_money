@@ -87,11 +87,10 @@ describe 'Vendors Endpoints' do
   describe 'Vendor Update endpoint (PATCH /api/v0/vendors/:id)' do 
     it 'updates the given Vendors information in the api database' do 
       vendor = create(:vendor)
-      patch api_v0_vendor_path, params: { contact_name: 'Xander' }
+      patch api_v0_vendor_path(vendor.id), params: { contact_name: 'Xander' }
       expect(response).to be_successful
       expect(response.status).to eq(200)
       result = JSON.parse(response.body, symbolize_names: true)
-      require 'pry'; binding.pry
 
       expect(result[:data][:attributes][:name]).to eq(vendor.name)
     end
