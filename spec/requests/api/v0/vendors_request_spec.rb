@@ -84,6 +84,44 @@ describe 'Vendors Endpoints' do
       end
     end
   end
+  describe 'Vendor Update endpoint (PATCH /api/v0/vendors/:id)' do 
+    it 'updates the given Vendors information in the api database' do 
+      vendor = create(:vendor)
+      patch api_v0_vendor_path(vendor.id), params: { contact_name: 'Xander' }
+      expect(response).to be_successful
+      expect(response.status).to eq(200)
+      result = JSON.parse(response.body, symbolize_names: true)
+
+      expect(result[:data][:attributes][:name]).to eq(vendor.name)
+    end
+    describe 'requesting a Vendor be updated with incomplete/incorrect data' do 
+      it 'will return a 404 if given an invalid id' do 
+        patch api_v0_vendor_path(99999)
+
+        expect(response).to_not be_successful
+        expect(response.status).to eq(404)
+
+        expect(JSON.parse(response.body)).to eq('errors' => [{ 'status' => '404',
+                                                               'title' => "Couldn't find Vendor with 'id'=99999" }])
+      end
+      it 'returns a 400 error with a message' do
+        vendor = build(:vendor)
+        post api_v0_vendors_path, params: {
+          name: '',
+          description: vendor.description,
+          contact_name: vendor.contact_name,
+          contact_phone: vendor.contact_phone,
+          credit_accepted: nil
+        }
+        # expect(response).to_not be_successful
+        expect(response.status).to eq(400)
+        result = JSON.parse(response.body, symbolize_names: true)
+        expect(result).to have_key(:errors)
+        expect(result[:errors]).to be_a(Array)
+        expect(result[:errors].first[:title]).to eq("Validation failed: Name can't be blank, Credit accepted must be true or false")
+      end
+    end
+  end
   describe 'Vendor Delete endpoint (DELETE /api/v0/vendors/:id)' do 
     it 'removes a Vendor from the api database and returns a 204 status' do 
       vendor = create(:vendor)
