@@ -31,7 +31,7 @@ module Api
       end
 
       def record_invalid_response(exception)
-        render json: ErrorSerializer.new(ErrorMessage.new(exception.message, 400)).serialize_json, status: :bad_request
+        render json: ErrorSerializer.new(ErrorMessage.new(exception.message, 404)).serialize_json, status: :not_found
       end
 
       def existing_record_response(exception)

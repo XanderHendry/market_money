@@ -24,13 +24,13 @@ RSpec.describe 'MarketVendor Endpoints' do
           vendor_id: vendor.id
         }
         expect(response).to_not be_successful
-        expect(response.status).to eq(400)
+        expect(response.status).to eq(404)
         result = JSON.parse(response.body, symbolize_names: true)
         expect(result).to have_key(:errors)
         expect(result[:errors]).to be_a(Array)
         expect(result[:errors].first[:title]).to eq("Validation failed: Market must exist")
       end
-      it 'returns a 422 error with a message' do 
+      it 'returns a 422 error with a message if the association already exists under another MarketVendor' do 
         market = create(:market)
         vendor = create(:vendor)
         market_vendor = MarketVendor.create({market_id: market.id, vendor_id: vendor.id})
@@ -75,4 +75,4 @@ RSpec.describe 'MarketVendor Endpoints' do
       end
     end
   end
-end 
+end
