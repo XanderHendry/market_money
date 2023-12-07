@@ -17,6 +17,11 @@ module Api
         render json: VendorSerializer.new(vendor), status: :created
       end
 
+      def destroy
+        vendor = Vendor.find(params[:id])
+        vendor.destroy
+      end
+
       private
 
       def vendor_params
