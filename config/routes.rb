@@ -12,4 +12,5 @@ Rails.application.routes.draw do
     end
   end
   post '/api/v0/market_vendors', to: 'api/v0/market_vendors#create'
+  delete '/api/v0/market_vendors', to: 'api/v0/market_vendors#delete'
 end
