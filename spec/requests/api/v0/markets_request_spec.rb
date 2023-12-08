@@ -163,7 +163,7 @@ RSpec.describe 'Markets Endpoints' do
       market = create(:market)
       market2 = create(:market, state: market.state)
       market3 = create(:market, state: market.state, city: market.city)
-
+      
       # search by city/state/name
       get "/api/v0/markets/search?city=#{market.city}&state=#{market.state}&name=#{market.name}"
       expect(response).to be_successful
@@ -214,11 +214,11 @@ RSpec.describe 'Markets Endpoints' do
       market = create(:market)
       market2 = create(:market, state: market.state)
       market3 = create(:market, state: market.state, city: market.city)
-
+      
       get "/api/v0/markets/search?city=#{market.city}&name=#{market.name}"
       expect(response).to_not be_successful
       expect(response.status).to eq(422)
-
+      
       get "/api/v0/markets/search?city=#{market.city}"
       expect(response).to_not be_successful
       expect(response.status).to eq(422)
@@ -226,6 +226,36 @@ RSpec.describe 'Markets Endpoints' do
       get '/api/v0/markets/search?foo=bar'
       expect(response).to_not be_successful
       expect(response.status).to eq(422)
+    end
+  end
+  describe 'ATMs near Market (/api/v0/markets/:id/nearest_atms)' do 
+    it 'finds 10 atms near the location of the given market' do 
+      market = Market.create({
+        name: "14&U Farmers' Market", 
+        street:"1400 U Street NW ",
+        city: "Washington",
+        county: "District of Columbia",
+        state: "District of Columbia",
+        zip: "20009",
+        lat: "38.9169984",
+        lon: "-77.0320505"
+      })
+      get "/api/v0/markets/#{market.id}/nearest_atms"
+      
+      expect(response).to be_successful
+      expect(response.status).to eq(200)
+    end
+    describe 'requesting a Markets vendors with an ID not in the database' do
+      it 'returns a 404 error with a message' do
+        
+        get "/api/v0/markets/99999/nearest_atms"
+    
+        expect(response).to_not be_successful
+        expect(response.status).to eq(404)
+    
+        expect(JSON.parse(response.body)).to eq('errors' => [{ 'status' => '404',
+        'title' => "Couldn't find Market with 'id'=99999" }])
+      end
     end
   end
 end
