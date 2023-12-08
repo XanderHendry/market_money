@@ -19,6 +19,11 @@ module Api
         end
       end
 
+      def nearest_atms
+        market = Market.find(params[:id])
+        render json: AtmSerializer.new(AtmService.new.atms_near_market(market))
+      end
+
       private
 
       def query_params

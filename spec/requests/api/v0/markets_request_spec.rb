@@ -247,7 +247,8 @@ RSpec.describe 'Markets Endpoints' do
     end
     describe 'requesting a Markets vendors with an ID not in the database' do
       it 'returns a 404 error with a message' do
-        get get "/api/v0/markets/9999/nearest_atms"
+        
+        get "/api/v0/markets/99999/nearest_atms"
     
         expect(response).to_not be_successful
         expect(response.status).to eq(404)
