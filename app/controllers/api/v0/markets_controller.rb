@@ -11,8 +11,9 @@ module Api
 
       def search
         begin
-          market = Market.search_by_fragment(query_params)
-          render json: MarketSerializer.new(market)
+          search_results = Market.search_by_fragment(query_params)
+          # require 'pry'; binding.pry
+          render json: MarketSerializer.new(search_results)
         rescue ActiveRecord::StatementInvalid => exception
           render json: ErrorSerializer.new(ErrorMessage.new(exception.message, 422)).serialize_json, status: :unprocessable_entity
         end

@@ -21,10 +21,43 @@ RSpec.describe Market, type: :model do
       it 'allows the user to search for markets using city, state, and name parameters' do 
         market1 = create(:market)
         market2 = create(:market)
-        market3 = create(:market)
-        search_results = Market.search_by_fragment(market1.name)
-        expect(search_results).to eq(market1)
+        search_results = Market.search_by_fragment({'city' => market1.city, 'state' => market1.state, 'name' => market1.name})
+        expect(search_results.first).to eq(market1)
       end
+      it 'allows the user to search for markets using city, state parameters' do 
+        market1 = create(:market)
+        market2 = create(:market)
+        search_results = Market.search_by_fragment({'city' => market1.city, 'state' => market1.state})
+        expect(search_results.first).to eq(market1)
+      end
+      it 'allows the user to search for markets using name, state parameters' do 
+        market1 = create(:market)
+        market2 = create(:market)
+        search_results = Market.search_by_fragment({'state' => market1.state, 'name' => market1.name})
+        expect(search_results.first).to eq(market1)
+      end
+      it 'allows the user to search for markets by state' do 
+        market1 = create(:market)
+        market2 = create(:market)
+        search_results = Market.search_by_fragment({'state' => market1.state})
+        expect(search_results.first).to eq(market1)
+      end
+      it 'allows the user to search for markets by name' do 
+        market1 = create(:market)
+        market2 = create(:market)
+        search_results = Market.search_by_fragment({'name' => market1.name})
+        expect(search_results.first).to eq(market1)
+      end
+      # it 'does not allow the user to search for markets using name and city parameters' do 
+      #   market1 = create(:market)
+      #   market2 = create(:market)
+      #   expect(Market.search_by_fragment({'city' => market1.city, 'name' => market1.name})).to raise_error(ActiveRecord::StatementInvalid)
+      # end
+      # it 'does not allow the user to search for markets by city' do
+      #   market1 = create(:market)
+      #   market2 = create(:market)
+      #   expect(Market.search_by_fragment({'city' => market1.city})).to raise_error(ActiveRecord::StatementInvalid)
+      # end
     end
   end
 end

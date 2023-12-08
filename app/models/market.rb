@@ -5,25 +5,25 @@ class Market < ApplicationRecord
 
   def self.search_by_fragment(query)
     query_params = query.keys.sort
-
     if query_params == ['city', 'name', 'state']
       #200?
-      market = Market.where(query)
+      results = Market.where(city: query['city']).and(Market.where(state: query['state'])).and(Market.where(name: query['name']))
     elsif query_params == ['name', 'state']
       # 200?
-      market = Market.where(query)
+      results = Market.where(state: query['state']).and(Market.where(name: query['name']))
     elsif query_params == ['city', 'state']
       # 200?
-      market = Market.where(query)
+      results = Market.where(city: query['city']).and(Market.where(state: query['state']))
     elsif query_params == ['state']
       # 200?
-      market = Market.where(query)
+      results = Market.where(state: query['state'])
     elsif query_params == ['name']
       # 200?
-      market = Market.where(query)
+      results = Market.where(name: query['name'])
     else 
       # 422?
       raise ActiveRecord::StatementInvalid, "Invalid set of parameters. Please provide a valid set of parameters to perform a search with this endpoint."
     end
+    results
   end
 end
