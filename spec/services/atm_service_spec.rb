@@ -25,6 +25,16 @@ RSpec.describe AtmService do
         expect(atm_data).to be_a(Hash)
         expect(atm_data[:poi]).to have_key :name
         expect(atm_data[:poi][:name]).to be_a(String)
+        expect(atm_data).to have_key :address
+        expect(atm_data[:address]).to be_a(Hash)
+        expect(atm_data[:address]).to have_key :freeformAddress
+        expect(atm_data[:address][:freeformAddress]).to be_a(String) 
+        expect(atm_data).to have_key :position
+        expect(atm_data[:position]).to be_a(Hash)
+        expect(atm_data[:position]).to have_key :lat
+        expect(atm_data[:position][:lat]).to be_a(Float)
+        expect(atm_data[:position]).to have_key :lon
+        expect(atm_data[:position][:lon]).to be_a(Float)
       end
     end
     context "#get_url" do
