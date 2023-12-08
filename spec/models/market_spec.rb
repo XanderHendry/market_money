@@ -15,4 +15,39 @@ RSpec.describe Market, type: :model do
     it { should have_many(:market_vendors) }
     it { should have_many(:vendors).through(:market_vendors) }
   end
+
+  describe 'class methods' do 
+    describe 'self.search_by_fragment' do 
+      before(:each) do 
+        @market1 = create(:market, name: 'Xander Hendry')
+        @market2 = create(:market)
+      end
+      it 'allows the user to search for markets using city, state, and name parameters' do 
+        search_results = Market.search_by_fragment({'city' => @market1.city, 'state' => @market1.state, 'name' => @market1.name})
+        expect(search_results.first).to eq(@market1)
+      end
+      it 'allows the user to search for markets using city, state parameters' do 
+        search_results = Market.search_by_fragment({'city' => @market1.city, 'state' => @market1.state})
+        expect(search_results.first).to eq(@market1)
+      end
+      it 'allows the user to search for markets using name, state parameters' do 
+        search_results = Market.search_by_fragment({'state' => @market1.state, 'name' => @market1.name})
+        expect(search_results.first).to eq(@market1)
+      end
+      it 'allows the user to search for markets by state' do 
+        search_results = Market.search_by_fragment({'state' => @market1.state})
+        expect(search_results.first).to eq(@market1)
+      end
+      it 'allows the user to search for markets by name' do 
+        search_results = Market.search_by_fragment({'name' => @market1.name})
+        expect(search_results.first).to eq(@market1)
+      end
+      # it 'does not allow the user to search for markets using name and city parameters' do
+      #   expect(Market.search_by_fragment({'city' => @market1.city, 'name' => @market1.name})).to raise_error(ActiveRecord::StatementInvalid)
+      # end
+      # it 'does not allow the user to search for markets by city' do
+      #   expect(Market.search_by_fragment({'city' => @market1.city})).to raise_error(ActiveRecord::StatementInvalid)
+      # end
+    end
+  end
 end

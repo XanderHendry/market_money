@@ -100,7 +100,7 @@ RSpec.describe 'Markets Endpoints' do
         expect(response.status).to eq(404)
 
         expect(JSON.parse(response.body)).to eq('errors' => [{ 'status' => '404',
-                                                               'title' => "Couldn't find Market with 'id'=99999" }])
+        'title' => "Couldn't find Market with 'id'=99999" }])
       end
     end
   end
@@ -154,8 +154,78 @@ RSpec.describe 'Markets Endpoints' do
         expect(response.status).to eq(404)
 
         expect(JSON.parse(response.body)).to eq('errors' => [{ 'status' => '404',
-                                                               'title' => "Couldn't find Market with 'id'=99999" }])
+        'title' => "Couldn't find Market with 'id'=99999" }])
       end
+    end
+  end
+  describe 'Market Search endpoint (/api/v0/markets/search)' do 
+    it 'will search by city/state/name, city/state, state/name, state, or name' do 
+      market = create(:market)
+      market2 = create(:market, state: market.state)
+      market3 = create(:market, state: market.state, city: market.city)
+
+      # search by city/state/name
+      get "/api/v0/markets/search?city=#{market.city}&state=#{market.state}&name=#{market.name}"
+      expect(response).to be_successful
+      expect(response.status).to eq(200)
+      search_results = JSON.parse(response.body, symbolize_names: true)
+      expect(search_results).to have_key(:data)
+      expect(search_results[:data]).to be_an(Array)
+      expect(search_results[:data].count).to eq(1)
+      
+      # search by city/state
+      get "/api/v0/markets/search?city=#{market.city}&state=#{market.state}"
+      expect(response).to be_successful
+      expect(response.status).to eq(200)
+      search_results = JSON.parse(response.body, symbolize_names: true)
+      expect(search_results).to have_key(:data)
+      expect(search_results[:data]).to be_an(Array)
+      expect(search_results[:data].count).to eq(2)
+      
+      # search by state/name
+      get "/api/v0/markets/search?state=#{market.state}&name=#{market.name}"
+      expect(response).to be_successful
+      expect(response.status).to eq(200)
+      search_results = JSON.parse(response.body, symbolize_names: true)
+      expect(search_results).to have_key(:data)
+      expect(search_results[:data]).to be_an(Array)
+      expect(search_results[:data].count).to eq(1)
+      
+      # search by state
+      get "/api/v0/markets/search?state=#{market.state}"
+      expect(response).to be_successful
+      expect(response.status).to eq(200)
+      search_results = JSON.parse(response.body, symbolize_names: true)
+      expect(search_results).to have_key(:data)
+      expect(search_results[:data]).to be_an(Array)
+      expect(search_results[:data].count).to eq(3)
+      
+      # search by name
+      get "/api/v0/markets/search?name=#{market.name}"
+      expect(response).to be_successful
+      expect(response.status).to eq(200)
+      search_results = JSON.parse(response.body, symbolize_names: true)
+      expect(search_results).to have_key(:data)
+      expect(search_results[:data]).to be_an(Array)
+      expect(search_results[:data].count).to eq(1)
+      
+    end
+    it 'will return a status of 422 if given bad params, a city+market name only, or a city only' do
+      market = create(:market)
+      market2 = create(:market, state: market.state)
+      market3 = create(:market, state: market.state, city: market.city)
+
+      get "/api/v0/markets/search?city=#{market.city}&name=#{market.name}"
+      expect(response).to_not be_successful
+      expect(response.status).to eq(422)
+
+      get "/api/v0/markets/search?city=#{market.city}"
+      expect(response).to_not be_successful
+      expect(response.status).to eq(422)
+      
+      get '/api/v0/markets/search?foo=bar'
+      expect(response).to_not be_successful
+      expect(response.status).to eq(422)
     end
   end
 end

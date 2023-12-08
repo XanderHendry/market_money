@@ -1,8 +1,6 @@
 module Api
   module V0
     class MarketsController < ApplicationController
-      rescue_from ActiveRecord::RecordNotFound, with: :not_found_response
-
       def index
         render json: MarketSerializer.new(Market.all)
       end
@@ -11,11 +9,20 @@ module Api
         render json: MarketSerializer.new(Market.find(params[:id]))
       end
 
+      def search
+        begin
+          search_results = Market.search_by_fragment(query_params)
+          # require 'pry'; binding.pry
+          render json: MarketSerializer.new(search_results)
+        rescue ActiveRecord::StatementInvalid => exception
+          render json: ErrorSerializer.new(ErrorMessage.new(exception.message, 422)).serialize_json, status: :unprocessable_entity
+        end
+      end
+
       private
 
-      def not_found_response(exception)
-        render json: ErrorSerializer.new(ErrorMessage.new(exception.message, 404))
-                                    .serialize_json, status: :not_found
+      def query_params
+        params.permit(:state, :city, :name)
       end
     end
   end
