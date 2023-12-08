@@ -7,18 +7,18 @@ class AtmSerializer
 
   def serialize_json
     serialized_hash = {
-      data: []
+      "data": []
     }
     @nearby_atms[:results].each do |atm|
       serialized_hash[:data] << {
-        id: nil,
-        type: 'atm',
-        attributes: {
-          name: atm[:poi][:name],
-          address: atm[:address][:freeformAddress],
-          lat: atm[:position][:lat],
-          lon: atm[:position][:lon],
-          distance: atm[:dist]
+        "id": nil,
+        "type": 'atm',
+        "attributes": {
+          "name": atm[:poi][:name],
+          "address": atm[:address][:freeformAddress],
+          "lat": atm[:position][:lat],
+          "lon": atm[:position][:lon],
+          "distance": atm[:dist]
         }
       }
     end
