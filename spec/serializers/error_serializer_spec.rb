@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe MarketSerializer do
+RSpec.describe ErrorSerializer do
   before(:each) do
     message = ErrorMessage.new('error messaging test', 666)
     @serializer = ErrorSerializer.new(message)
